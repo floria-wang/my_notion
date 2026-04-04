@@ -1,0 +1,29 @@
+name: Notion Heatmap Sync
+on:
+  schedule:
+    - cron: '0 16 * * *' # 北京时间每天凌晨0点运行
+  workflow_dispatch: # 支持手动点击运行测试
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Install Lib
+        run: pip install notion-client
+      - name: Run
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: python update_data.py
+      - name: Push Changes
+        run: |
+          git config --global user.name "Heatmap-Bot"
+          git config --global user.email "bot@github.com"
+          git add index.html
+          git commit -m "Update heatmap data" || exit 0
+          git push

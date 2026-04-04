@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* 整体居中，背景透明适配Notion */
+        body { margin: 0; display: flex; justify-content: center; background: transparent; }
+        
+        .card {
+            width: 160px; /* 宽度微调，更适合边栏 */
+            border: 1px solid #acacac; /* 灰色边框 */
+            border-radius: 10px;
+            overflow: hidden;
+            font-family: -apple-system, sans-serif;
+            background: white;
+        }
+
+        .header { 
+            background: #e2e2e2; /* 浅灰色背景 */
+            color: #666; /* 深灰色文字 */
+            padding: 8px; 
+            font-size: 12px; 
+            text-align: center;
+            font-weight: 500;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .content { 
+            padding: 18px 0; 
+            text-align: center; 
+        }
+
+        .number { 
+            font-size: 38px; 
+            font-weight: 800; 
+            color: #37352f; 
+            line-height: 1;
+        }
+
+        .unit { 
+            font-size: 10px; 
+            color: #999; 
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">2027 考研倒计时</div>
+        <div class="content">
+            <div id="days" class="number">--</div>
+            <div class="unit">DAYS LEFT</div>
+        </div>
+    </div>
+
+    <script>
+        function count() {
+            // 目标日期：2026年12月21日
+            const target = new Date('2026-12-21T00:00:00');
+            const now = new Date();
+            const diff = target - now;
+            
+            // 计算剩余天数并向上取整
+            const d = Math.ceil(diff / (1000 * 60 * 60 * 24));
+            
+            // 渲染数字，如果过了日期显示0
+            document.getElementById('days').innerText = d > 0 ? d : 0;
+        }
+        count();
+        // 每小时自动刷新一次数字
+        setInterval(count, 3600000);
+    </script>
+</body>
+</html>

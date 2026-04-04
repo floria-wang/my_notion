@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body { margin: 0; background: transparent; display: flex; justify-content: center; overflow: hidden; }
+        #main { width: 100%; height: 200px; max-width: 800px; }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script>
+        var chartDom = document.getElementById('main');
+        var myChart = echarts.init(chartDom);
+        
+        // DATA_START
+        const mockData = []; 
+        // DATA_END
+
+        const option = {
+            visualMap: {
+                show: false, min: 0, max: 10,
+                inRange: { 
+                    // 颜色从浅灰 -> 浅红 -> 亮绿 -> 深蓝 渐变
+                    color: ['#ebedf0', '#F87171', '#4ADE80', '#3B82F6'] 
+                }
+            },
+            calendar: {
+                top: 40, left: 30, right: 10,
+                range: '2026',
+                cellSize: ['auto', 13],
+                splitLine: { show: false },
+                itemStyle: { color: '#f1f1f1', borderWidth: 2, borderColor: '#fff' },
+                yearLabel: { show: false },
+                dayLabel: { firstDay: 1, nameMap: 'cn', fontSize: 10, color: '#ccc' },
+                monthLabel: { nameMap: 'cn', fontSize: 10, color: '#999' }
+            },
+            series: {
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                data: mockData
+            }
+        };
+        myChart.setOption(option);
+        // 自动适配窗口大小
+        window.onresize = function() { myChart.resize(); };
+    </script>
+</body>
+</html>
