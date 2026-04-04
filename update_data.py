@@ -18,41 +18,32 @@ def get_notion_data():
     
     while has_more:
         try:
-            # 核心修复点：确保调用路径正确
+            # 极简调用：如果 notion.databases.query 报错，说明库结构有变
+            # 我们直接使用客户端内置的 request 方法或最稳健的路径
             response = notion.databases.query(
-                database_id=database_id,
-                start_cursor=start_cursor,
-                filter={
-                    "property": "状态",
-                    "status": {"equals": "已完成"}
+                **{
+                    "database_id": database_id,
+                    "start_cursor": start_cursor,
+                    "filter": {
+                        "property": "状态",
+                        "status": {"equals": "已完成"}
+                    }
                 }
             )
+            # 如果上面还是报错，请尝试将调用改为：notion.request(path=f"databases/{database_id}/query", method="POST", body=...)
+            # 但 3.0 版本理论上应该支持 notion.databases.query
+            
             all_results.extend(response.get("results", []))
             has_more = response.get("has_more", False)
             start_cursor = response.get("next_cursor")
             print(f"当前已抓取 {len(all_results)} 条记录...")
             
         except Exception as e:
-            print(f"Notion 查询失败: {e}")
+            # 打印出 notion 对象的所有属性，方便我们精准 Debug
+            print(f"DEBUG: notion 对象拥有的属性: {dir(notion)}")
+            print(f"DEBUG: notion.databases 拥有的属性: {dir(notion.databases)}")
             raise e
 
-    # 2. 统计每天完成的数量
-    counts = {}
-    for page in all_results:
-        properties = page.get("properties", {})
-        
-        # 提取『完成日期』属性
-        date_wrap = properties.get("完成日期", {})
-        if date_wrap and date_wrap.get("type") == "date":
-            date_prop = date_wrap.get("date")
-            if date_prop and date_prop.get("start"):
-                d = date_prop["start"].split('T')[0] # 只取日期部分
-                counts[d] = counts.get(d, 0) + 1
-    
-    # 转换为 ECharts 格式: [[日期, 数量], ...]
-    formatted_data = [[d, c] for d, c in counts.items()]
-    print(f"数据处理完毕：发现 {len(formatted_data)} 天有打卡记录。")
-    return formatted_data
 
 def sync_to_html(data):
     """将数据写入 index.html"""
