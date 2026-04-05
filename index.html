@@ -5,9 +5,20 @@
     <title>SJTU 816 Heatmap</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-        /* 适配 Notion Embed 透明背景 */
-        body { margin: 0; background: transparent; display: flex; justify-content: center; overflow: hidden; }
-        #main { width: 100%; height: 200px; max-width: 850px; }
+        /* 适配 Notion 背景，确保在深色/浅色模式下都有良好的视觉效果 */
+        body { 
+            margin: 0; 
+            background: transparent; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            overflow: hidden; 
+        }
+        #main { 
+            width: 100%; 
+            height: 200px; 
+            max-width: 800px; 
+        }
     </style>
 </head>
 <body>
@@ -16,12 +27,15 @@
         const chartDom = document.getElementById('main');
         const myChart = echarts.init(chartDom);
 
-        // DATA_START
-        const mockData = [["2026-04-05", 11]]; 
-        // DATA_END
+        // --- 数据区 ---
+        // 确保日期格式为 YYYY-MM-DD
+        const mockData = [
+            ["2026-04-05", 11]
+        ]; 
 
         const option = {
             tooltip: {
+                trigger: 'item',
                 formatter: function (p) {
                     return p.value[0] + ' : ' + p.value[1] + ' 个任务';
                 }
@@ -29,60 +43,62 @@
             visualMap: {
                 show: false,
                 min: 0,
-                max: 6, // 6及以上自动映射到最后一个颜色
+                max: 6, 
                 type: 'piecewise',
-                // 定义 6 个等级的莫兰迪绿
-                splitNumber: 6,
+                // 定义 7 个颜色阶段 (0, 1, 2, 3, 4, 5, 6+)
                 inRange: {
                     color: [
-                        '#ebedf0', // 0: 浅灰色底格
-                        '#c6e48b', // 1: 浅绿
-                        '#a1d99b', // 2: 豆绿
-                        '#74c476', // 3: 迷迭香绿
-                        '#41ab5d', // 4: 森林绿
-                        '#238b45', // 5: 深绿
-                        '#005a32'  // 6+: 极致深绿 (上岸绿)
+                        '#ebedf0', // 0: 默认底色
+                        '#c6e48b', // 1
+                        '#a1d99b', // 2
+                        '#74c476', // 3
+                        '#41ab5d', // 4
+                        '#238b45', // 5
+                        '#005a32'  // 6+: 极致深绿
                     ]
+                },
+                // 关键点：数值超过 max 时强制匹配深绿色
+                outOfRange: {
+                    color: '#005a32'
                 }
             },
             calendar: {
-                top: 40,
-                left: 45,
+                top: 30,
+                left: 40,
                 right: 10,
                 cellSize: ['auto', 13],
-                range: ['2026-01-01', '2026-12-31'],
-                splitLine: { show: false }, // 移除月份黑框
+                range: '2026', // 简写，匹配 2026 全年
+                splitLine: { show: false }, 
                 itemStyle: {
-                    color: '#ebedf0', // 默认底色：浅灰色
+                    color: '#ebedf0', 
                     borderWidth: 2,
                     borderColor: '#fff',
-                    borderRadius: 3   // 微圆角，更精致
+                    borderRadius: 2
                 },
                 yearLabel: { show: false },
                 dayLabel: { 
                     nameMap: ['日', '一', '二', '三', '四', '五', '六'], 
                     firstDay: 1, 
                     color: '#999',
-                    fontSize: 12
+                    fontSize: 11
                 },
                 monthLabel: { 
                     nameMap: 'cn', 
                     color: '#999',
-                    fontSize: 12
+                    fontSize: 11
                 }
             },
             series: {
                 type: 'heatmap',
                 coordinateSystem: 'calendar',
-                data: mockData.map(function (item) {
-        return [item[0].replace(/-/g, '/'), item[1]]; 
-    })
+                // 修复点：直接使用原始数据，不进行字符串替换，防止日期解析偏离
+                data: mockData
             }
         };
 
         myChart.setOption(option);
 
-        // 自动适配窗口大小
+        // 自动适配 Notion 窗口宽度
         window.onresize = function() {
             myChart.resize();
         };
