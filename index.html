@@ -11,54 +11,59 @@
 <body>
     <div id="main"></div>
     <script type="text/javascript">
-    const chartDom = document.getElementById('main');
-    const myChart = echarts.init(chartDom);
+        const chartDom = document.getElementById('main');
+        const myChart = echarts.init(chartDom);
 
     // DATA_START
         const mockData = [["2026-04-05", 11]];
         // DATA_END
 
-    const option = {
-        tooltip: {
-            formatter: function (p) {
-                return p.value[0] + ' : ' + p.value[1] + ' 个任务';
-            }
-        },
-        visualMap: {
-            show: false,
-            min: 0,
-            max: 6, // 超过 6 的都会显示为最深色
-            type: 'continuous', // 改为连续型，兼容性更强
-            inRange: {
-                color: [
-                    '#f0f2f0', '#d9e2d5', '#b9c7b6', 
-                    '#9aa995', '#7a8b75', '#5b6d56', '#3e4d3a'
-                ]
-            }
-        },
-        calendar: {
-            top: 40,
-            left: 50,
-            right: 10,
-            cellSize: ['auto', 13],
-            range: '2026', // <--- 再次确认这里是 2026
-            itemStyle: {
-                borderWidth: 2,
-                borderColor: '#fff',
-                borderRadius: 4
+        const option = {
+            tooltip: {
+                formatter: function (p) {
+                    return p.value[0] + ' : ' + p.value[1] + ' 个任务';
+                }
             },
-            yearLabel: { show: false },
-            dayLabel: { nameMap: ['日', '一', '二', '三', '四', '五', '六'], firstDay: 1 },
-            monthLabel: { nameMap: 'cn' }
-        },
-        series: {
-            type: 'heatmap',
-            coordinateSystem: 'calendar',
-            data: mockData
-        }
-    };
+            visualMap: {
+                show: false,
+                min: 0,
+                max: 6,
+                type: 'piecewise',
+                inRange: {
+                    color: [
+                        '#f0f2f0', // 0次
+                        '#d9e2d5', // 1次
+                        '#b9c7b6', // 2次
+                        '#9aa995', // 3次
+                        '#7a8b75', // 4次
+                        '#5b6d56', // 5次
+                        '#3e4d3a'  // 6次及以上
+                    ]
+                }
+            },
+            calendar: {
+                top: 40,
+                left: 40,
+                right: 10,
+                cellSize: ['auto', 12],
+                range: '2026',
+                itemStyle: {
+                    borderWidth: 2,
+                    borderColor: '#fff' // 只有方块间的白线，没有大边框
+                },
+                splitLine: { show: false }, // 彻底关掉那个烦人的黑色月份框
+                yearLabel: { show: false },
+                dayLabel: { nameMap: ['日', '一', '二', '三', '四', '五', '六'], firstDay: 1, color: '#999' },
+                monthLabel: { nameMap: 'cn', color: '#999' }
+            },
+            series: {
+                type: 'heatmap',
+                coordinateSystem: 'calendar',
+                data: mockData
+            }
+        };
 
-    myChart.setOption(option);
+        myChart.setOption(option);
     </script>
 </body>
 </html>
