@@ -74,7 +74,9 @@
             series: {
                 type: 'heatmap',
                 coordinateSystem: 'calendar',
-                data: mockData
+                data: mockData.map(function (item) {
+        return [item[0].replace(/-/g, '/'), item[1]]; 
+    })
             }
         };
 
