@@ -19,13 +19,31 @@
         // DATA_END
 
         const option = {
-            visualMap: {
-                show: false, min: 0, max: 10,
-                inRange: { 
-                    // 颜色从浅灰 -> 浅红 -> 亮绿 -> 深蓝 渐变
-                    color: ['#ebedf0', '#F87171', '#4ADE80', '#3B82F6'] 
-                }
+           visualMap: {
+            min: 0,
+            max: 5, // 0到5次，共6个阶梯
+            type: 'piecewise',
+            orient: 'horizontal',
+            left: 'center',
+            top: 10,
+            itemWidth: 14,
+            itemHeight: 14,
+            textStyle: { 
+                color: '#8e9e94', // 莫兰迪灰绿文字
+                fontSize: 12 
             },
+            // 莫兰迪色系：低饱和度、灰调、高级绿
+            inRange: {
+                color: [
+                    '#f0f2f0', // 0次：极浅灰绿（几乎白色，作为底色）
+                    '#d9e2d5', // 1次：豆灰绿
+                    '#b9c7b6', // 2次：灰艾绿
+                    '#9aa995', // 3次：迷迭香绿
+                    '#7a8b75', // 4次：森林灰绿
+                    '#5b6d56'  // 5次：深苔藓绿（考研上岸绿！）
+                ]
+            }
+        },
             calendar: {
                 top: 40, left: 30, right: 10,
                 range: '2026',
@@ -37,10 +55,16 @@
                 monthLabel: { nameMap: 'cn', fontSize: 10, color: '#999' }
             },
             series: {
-                type: 'heatmap',
-                coordinateSystem: 'calendar',
-                data: mockData
+            type: 'heatmap',
+            coordinateSystem: 'calendar',
+            data: mockData,
+            itemStyle: {
+                color: '#f0f2f0', // 默认底色
+                borderWidth: 2,
+                borderColor: '#fff', // 方块间的白色空隙
+                borderRadius: 4      // 添加 4px 圆角，方块会变圆润
             }
+        }
         };
         myChart.setOption(option);
         // 自动适配窗口大小
