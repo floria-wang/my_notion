@@ -20,27 +20,19 @@
 
         const option = {
            visualMap: {
+            show: false, // 依然隐藏顶部的颜色索引
             min: 0,
-            max: 5, // 0到5次，共6个阶梯
+            max: 6,      // 调整最大值为 6（代表 6 次及以上）
             type: 'piecewise',
-            orient: 'horizontal',
-            left: 'center',
-            top: 10,
-            itemWidth: 14,
-            itemHeight: 14,
-            textStyle: { 
-                color: '#8e9e94', // 莫兰迪灰绿文字
-                fontSize: 12 
-            },
-            // 莫兰迪色系：低饱和度、灰调、高级绿
             inRange: {
                 color: [
-                    '#f0f2f0', // 0次：极浅灰绿（几乎白色，作为底色）
+                    '#f0f2f0', // 0次：底面灰
                     '#d9e2d5', // 1次：豆灰绿
                     '#b9c7b6', // 2次：灰艾绿
                     '#9aa995', // 3次：迷迭香绿
                     '#7a8b75', // 4次：森林灰绿
-                    '#5b6d56'  // 5次：深苔藓绿（考研上岸绿！）
+                    '#5b6d56', // 5次：深苔藓绿
+                    '#3e4d3a'  // 6次及以上：极深灰绿（这就是你要的终极颜色）
                 ]
             }
         },
