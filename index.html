@@ -40,28 +40,23 @@
                     return p.value[0] + ' : ' + p.value[1] + ' 个任务';
                 }
             },
-            visualMap: {
-                show: false,
-                min: 0,
-                max: 6, 
-                type: 'piecewise',
-                // 定义 7 个颜色阶段 (0, 1, 2, 3, 4, 5, 6+)
-                inRange: {
-                    color: [
-                        '#ebedf0', // 0: 默认底色
-                        '#c6e48b', // 1
-                        '#a1d99b', // 2
-                        '#74c476', // 3
-                        '#41ab5d', // 4
-                        '#238b45', // 5
-                        '#005a32'  // 6+: 极致深绿
-                    ]
-                },
-                // 关键点：数值超过 max 时强制匹配深绿色
-                outOfRange: {
-                    color: '#005a32'
-                }
-            },
+       visualMap: {
+            show: false,
+            type: 'piecewise',
+            // 手动定义每一级的区间
+            pieces: [
+                { min: 6, label: '6+ 次', color: '#005a32' }, // 6次及以上（上岸绿）
+                { min: 5, max: 5, label: '5 次', color: '#238b45' },
+                { min: 4, max: 4, label: '4 次', color: '#41ab5d' },
+                { min: 3, max: 3, label: '3 次', color: '#74c476' },
+                { min: 2, max: 2, label: '2 次', color: '#a1d99b' },
+                { min: 1, max: 1, label: '1 次', color: '#c6e48b' },
+                { value: 0, label: '无数据', color: '#ebedf0' } // 0次底色
+            ],
+            outOfRange: {
+                color: '#ebedf0' // 万一数据异常，显示底色
+            }
+        },
             calendar: {
                 top: 30,
                 left: 40,
