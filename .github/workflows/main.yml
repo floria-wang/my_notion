@@ -8,18 +8,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      # 升级到 v4，解决 Node.js 20 弃用警告
+      - uses: actions/checkout@v4
+
+      # 升级到 v5，解决 Node.js 20 弃用警告
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
+
       - name: Install Lib
         run: pip install notion-client==2.0.0
+
       - name: Run
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: python update_data.py
+
       - name: Push Changes
         run: |
           git config --global user.name "Heatmap-Bot"
