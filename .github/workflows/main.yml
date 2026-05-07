@@ -2,12 +2,9 @@ name: Notion Heatmap Sync
 
 on:
   schedule:
-    # 每天北京时间凌晨 0 点执行 (UTC 16:00)
     - cron: '0 16 * * *'
-  # 支持手动点击 Run workflow
   workflow_dispatch:
 
-# 强制所有 JS Actions 使用 Node.js 24 运行环境，解决弃用警告
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -16,16 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      # 使用 v4 版本
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 使用 v5 版本，并明确 Python 环境
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'
-          cache: 'pip' # 开启缓存，让后续运行更快
 
       - name: Install Dependencies
         run: pip install notion-client==2.0.0
@@ -41,6 +35,5 @@ jobs:
           git config --global user.name "Heatmap-Bot"
           git config --global user.email "bot@github.com"
           git add index.html
-          # 如果文件没有变化，commit 会失败，|| exit 0 确保工作流不会报错中止
           git commit -m "Update heatmap data" || exit 0
           git push
