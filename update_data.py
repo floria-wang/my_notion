@@ -16,22 +16,26 @@ if not NOTION_TOKEN or not DATABASE_ID:
 notion = Client(auth=NOTION_TOKEN)
 
 def get_heatmap_data():
-    print(f"--- 正在开启全量扫描模式 (包含自动翻页) ---")
+    print(f"--- 正在开启分批全量扫描模式 (防超时) ---")
     counts = {} 
     has_more = True
     next_cursor = None
     all_pages = []
+    batch_count = 1
 
     try:
-        # --- 核心改进：自动翻页抓取全部数据 ---
+        # --- 核心改进：限制单页大小为 50，小步长循环翻页防止服务器超时 ---
         while has_more:
+            print(f"正在拉取第 {batch_count} 批数据...")
             response = notion.databases.query(
                 database_id=DATABASE_ID,
-                start_cursor=next_cursor
+                start_cursor=next_cursor,
+                page_size=50  # 显式限制单次拉取数量，减轻 Notion 渲染压力
             )
             all_pages.extend(response.get("results", []))
             has_more = response.get("has_more")
             next_cursor = response.get("next_cursor")
+            batch_count += 1
         
         print(f"成功拉取全部数据，共计 {len(all_pages)} 条记录。开始分析...")
 
